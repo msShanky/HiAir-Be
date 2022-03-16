@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 from sqlalchemy import Boolean, Column, Integer, String, DateTime
 # from sqlalchemy.orm import relationship
 from app.db.session import Base
