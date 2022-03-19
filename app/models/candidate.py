@@ -24,10 +24,10 @@ class Candidate(Base):
     current_domain = Column(String)
     current_industry = Column(String)
 
-    request_fulfillment = relationship(
-        'RequestFulfillment',
-        back_populates='candidate'
-    )
+    # request_fulfillment = relationship(
+    #     'RequestFulfillment',
+    #     back_populates='candidate'
+    # )
 
     class Config:
         orm_mode = True

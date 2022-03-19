@@ -1,4 +1,5 @@
 from ast import operator
+from copy import deepcopy
 from fastapi import APIRouter, Depends, HTTPException
 from jinja2 import pass_environment
 from parso import parse
@@ -66,8 +67,7 @@ async def read_users(request_id: int, db: Session = Depends(get_db)):
 
     for candidate in candidates:
         print("candidate", candidate)
-        candidate_score = CandidateScore()
-        candidate_score = {
+        candidate_score: CandidateScore = {
             "skill_set": skill_set_matching(
                 request.skill_set,
                 candidate
@@ -102,13 +102,15 @@ async def read_users(request_id: int, db: Session = Depends(get_db)):
         candidate.hiair_score = candidate_hiair_score
         candidate.score_breakdown = candidate_score
 
-    parsed_data: list[CandidateWithScore] = sorted(
+    sorted_candidates: list[CandidateWithScore] = sorted(
         candidates,
         key=lambda k: k.hiair_score,
         reverse=True
     )
-
-    return parsed_data[0:int(request.no_of_profiles)]
+    old_sorted_list = deepcopy(sorted_candidates)
+    create_feedback_fulfillment(sorted_candidates, request, db)
+    
+    return old_sorted_list[0:int(request.no_of_profiles)]
 
 
 @ router.post('/')
