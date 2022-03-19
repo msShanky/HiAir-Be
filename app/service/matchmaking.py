@@ -72,8 +72,7 @@ def skill_set_matching(skills_to_match: str, candidate) -> float:
 
 
 def experience_matching(experience: str, candidate: Candidate) -> float:
-    candidate_experience_value = candidate.total_experience
-    print("TOTAL EXPERIENCE", candidate_experience_value, type(candidate_experience_value))
+    candidate_experience_value = candidate.total_experience    
     candidate_experience = float(candidate_experience_value)
     points = range_points_calculator(
         candidate_experience,
@@ -129,9 +128,6 @@ def salary_range_matching(salary_range: str, candidate: Candidate) -> float:
     # elif candidate_salary > max_end_range:
     #     points = 0
 
-    # print("Received salary range", salary_range)
-    # print("Received candidate salary", candidate.current_salary)
-    print("Points for Salary => ", points)
     return points
 
 

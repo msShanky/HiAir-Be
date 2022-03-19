@@ -38,5 +38,5 @@ class Candidate(CandidateBase):
 
 
 class CandidateWithScore(Candidate):
-    hiair_score: str
+    hiair_score: float
     score_breakdown: CandidateScore

@@ -1,4 +1,5 @@
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 from app.db.session import Base
 
 
@@ -22,6 +23,11 @@ class Candidate(Base):
     notice_period = Column(String)
     current_domain = Column(String)
     current_industry = Column(String)
+
+    request_fulfillment = relationship(
+        'RequestFulfillment',
+        back_populates='candidate'
+    )
 
     class Config:
         orm_mode = True
