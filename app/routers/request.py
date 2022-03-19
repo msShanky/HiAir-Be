@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy import JSON
+from fastapi import APIRouter, Depends, HTTPException
 from app.dependencies import get_db
+# from app.models.candidate import Candidate
+from app.schemas.candidate import Candidate, CandidateWithScore
 from app.models.request import Request
 from app.schemas.request import RequestBase
-from app.service.candidate import get_all_candidates
-from app.service.request import create_request_handler, domain_matching, experience_matching, get_all_request, get_request_by_id, industry_matching, location_matching, notice_period_matching, salary_range_matching, skill_set_matching
+from app.service.candidate import get_all_candidates, get_candidate_by_id
+from app.service.request import create_request_handler,  get_all_request, get_request_by_id
+from app.service.matchmaking import domain_matching, experience_matching, industry_matching, location_matching, notice_period_matching, salary_range_matching, skill_set_matching
 from sqlalchemy.orm import Session
 import pandas as pd
 
@@ -44,28 +46,55 @@ async def read_users(db: Session = Depends(get_db)):
 
 @router.get('/result/{request_id}')
 async def read_users(request_id: int, db: Session = Depends(get_db)):
-    candidates = get_all_candidates(db)
+    candidates: list[CandidateWithScore] = get_all_candidates(db)
+    # candidates = candidates[0:1]
     request: Request = get_request_by_id(request_id, db)
+
+    if request == None:
+        raise HTTPException(
+            status_code=404,
+            detail="Cannot find the request information for the provided id"
+        )
+
+    print("THE REQUEST IS", request.__dict__)
 
     for candidate in candidates:
         candidate_score = CandidateScore()
-        candidate_score.skill_set = skill_set_matching(
-            request.skill_set,
-            candidate
-        )
-        candidate_score.experience = experience_matching()
-        candidate_score.salary_range = salary_range_matching()
-        candidate_score.location = location_matching()
-        candidate_score.industry = industry_matching()
-        candidate_score.domain = domain_matching()
-        candidate_score.notice_period = notice_period_matching()
+        candidate_score = {
+            "skill_set": skill_set_matching(
+                request.skill_set,
+                candidate
+            ),
+            "experience": experience_matching(
+                request.experience,
+                candidate
+            ),
+            "salary_range": salary_range_matching(
+                request.salary_range,
+                candidate
+            ),
+            "location": location_matching(
+                request.job_location,
+                candidate
+            ),
+            "industry": industry_matching(
+                request.industry,
+                candidate
+            ),
+            "domain": domain_matching(
+                request.domain,
+                candidate
+            ),
+            "notice_period": notice_period_matching(
+                request.notice_period,
+                candidate
+            )
+        }
 
-        candidate_score_list = candidate_score.__dict__
-        for key in candidate_score_list:
-            print("INDIVIDUAL SCORE FOR ", key,
-                  " IS =>  ", candidate_score_list[key])
+        candidate_hiair_score = round(sum(candidate_score.values())/7, 2)
+        candidate.hiair_score = candidate_hiair_score
+        candidate.score_breakdown = candidate_score
 
-        print("CANDIDATE SCORE", candidate_score_list)
     return candidates
 
 

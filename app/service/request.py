@@ -1,41 +1,6 @@
-from cmath import log
-import re
 from sqlalchemy.orm import Session
-from app.models.candidate import Candidate
 from app.models.request import Request
 from app.schemas.request import RequestBase
-
-# Used for assigning points to the skill matches
-
-
-def skill_set_matching(skillsToMatch: str, candidate: Candidate) -> float:
-    print("THE BODY RECEIVED FOR THE MATHING", skillsToMatch, candidate)
-    return 1
-
-
-def experience_matching() -> float:
-    return 1
-
-
-def salary_range_matching() -> float:
-    return 1
-
-
-def location_matching() -> float:
-    return 1
-
-
-def industry_matching() -> float:
-    return 1
-
-
-def domain_matching() -> float:
-    return 1
-
-
-def notice_period_matching() -> float:
-    return 1
-
 
 def get_all_request(db: Session):
     return db.query(Request).all()

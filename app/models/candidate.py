@@ -14,9 +14,14 @@ class Candidate(Base):
     candidate_phone = Column(String)
     current_location = Column(String)
     preffered_location = Column(String)
+    current_salary = Column(String)
     total_experience = Column(String)
     current_company = Column(String)
     current_designation = Column(String)
+    skill_set = Column(String)
+    notice_period = Column(String)
+    current_domain = Column(String)
+    current_industry = Column(String)
 
     class Config:
         orm_mode = True
