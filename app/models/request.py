@@ -19,7 +19,12 @@ class Request(Base):
     industry = Column(String)
     no_of_profiles = Column(String)
 
-    # request_fulfillment = relationship("RequestFulfillment", back_populates='request')
+    # candidate_scrore = relationship(
+    #     "FulfillmentCandidateScore",
+    #     back_populates='request'
+    # )
+    # request_fulfillment = relationship(
+    #     "RequestFulfillment", back_populates='request')
 
     class Config:
         orm_mode = True

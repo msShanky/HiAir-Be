@@ -67,7 +67,7 @@ def skill_set_matching(skills_to_match: str, candidate) -> float:
     #         if skill in candidate_skill_list:
     #             points = skill_point + points
     points = point_matching_calculator(skills_to_match, candidate.skill_set)
-    print("Points for Skills => ", round(points, 2))
+    # print("Points for Skills => ", round(points, 2))
     return round(points, 2)
 
 
@@ -136,7 +136,7 @@ def location_matching(requested_locations: str, candidate: Candidate) -> float:
         requested_locations,
         candidate.preffered_location
     )
-    print("Points for location matching =>", points)
+    # print("Points for location matching =>", points)
     return points
 
 
@@ -145,7 +145,7 @@ def industry_matching(requested_industry: str, candidate: Candidate) -> float:
         requested_industry,
         candidate.current_industry
     )
-    print("Points for industry =>", points)
+    # print("Points for industry =>", points)
     return points
 
 
@@ -154,7 +154,7 @@ def domain_matching(requested_domain: str, candidate: Candidate) -> float:
         requested_domain,
         candidate.current_domain
     )
-    print("Points for industry =>", points)
+    # print("Points for industry =>", points)
     return points
 
 
@@ -163,5 +163,5 @@ def notice_period_matching(requested_notice_period: str, candidate: Candidate) -
         int(candidate.notice_period),
         requested_notice_period.split(',')
     )
-    print("The points generated for notice period is", points)
+    # print("The points generated for notice period is", points)
     return points

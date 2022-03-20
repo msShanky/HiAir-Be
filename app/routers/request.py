@@ -1,9 +1,8 @@
-from ast import operator
+
 from copy import deepcopy
 from fastapi import APIRouter, Depends, HTTPException
-from jinja2 import pass_environment
-from parso import parse
 from app.dependencies import get_db
+from fastapi.encoders import jsonable_encoder
 # from app.models.candidate import Candidate
 from app.schemas.candidate import CandidateWithScore
 from app.models.request import Request
@@ -11,7 +10,7 @@ from app.schemas.fulfillment import RequestFulfillmentBase
 from app.models.fulfillment import RequestFulfillment
 from app.schemas.request import RequestBase
 from app.service.candidate import get_all_candidates, get_candidate_by_id
-from app.service.fulfillment import create_feedback_fulfillment
+from app.service.fulfillment import create_fulfillment_request, get_fulfillment_by_id
 from app.service.request import create_request_handler,  get_all_request, get_request_by_id
 from app.service.matchmaking import domain_matching, experience_matching, industry_matching, location_matching, notice_period_matching, salary_range_matching, skill_set_matching
 from sqlalchemy.orm import Session
@@ -54,19 +53,29 @@ async def read_users(db: Session = Depends(get_db)):
 
 @router.get('/result/{request_id}')
 async def read_users(request_id: int, db: Session = Depends(get_db)):
+    try:
+        fulfillment_for_id: RequestFulfillment | None = get_fulfillment_by_id(
+            request_id, db
+        )
+        print(fulfillment_for_id, "fulfillment_for_id")
+        debug(fulfillment_for_id)
+    except Exception as e:
+        print("There is an error with fetching fulfillment -----------------", e)
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
     candidates: list[CandidateWithScore] = get_all_candidates(db)
-    # candidates = candidates[0:1]
-
     request: Request = get_request_by_id(request_id, db)
-
     if request == None:
         raise HTTPException(
             status_code=404,
             detail="Cannot find the request information for the provided id"
         )
 
+    # try:
     for candidate in candidates:
-        print("candidate", candidate)
         candidate_score: CandidateScore = {
             "skill_set": skill_set_matching(
                 request.skill_set,
@@ -108,9 +117,21 @@ async def read_users(request_id: int, db: Session = Depends(get_db)):
         reverse=True
     )
     old_sorted_list = deepcopy(sorted_candidates)
-    create_feedback_fulfillment(sorted_candidates, request, db)
-    
-    return old_sorted_list[0:int(request.no_of_profiles)]
+    print("THE NONE CONDITION", fulfillment_for_id == None)
+    # except Exception as e:
+    # 		debug("Exception when calculating score", e)
+
+    try:
+        if fulfillment_for_id == None:
+            create_fulfillment_request(sorted_candidates, request, db)
+        # debug("Total Profiles", int(request.no_of_profiles))
+        # debug(old_sorted_list)
+        # response = deepcopy(sorted_candidates)
+        # print(response[0].__dict__)
+        return old_sorted_list[0:int(request.no_of_profiles)]
+    except Exception as exception:
+        raise HTTPException(
+            status_code=500, detail="Error when creating fulfillment request" + str(exception))
 
 
 @ router.post('/')

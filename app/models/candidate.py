@@ -24,8 +24,8 @@ class Candidate(Base):
     current_domain = Column(String)
     current_industry = Column(String)
 
-    # request_fulfillment = relationship(
-    #     'RequestFulfillment',
+    # candidate_scrore = relationship(
+    #     'FulfillmentCandidateScore',
     #     back_populates='candidate'
     # )
 
