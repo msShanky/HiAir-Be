@@ -19,6 +19,6 @@ SQLALCHEMY_DATABASE_URL = "{}://{}:{}@{}:{}/{}".format(
 
 print("THE SQL DATABASE CONNECTION URL IS", os.getenv('DATABASE_URL'))
 print("THE SQL DATABASE CONNECTION URL FORMED IS", SQLALCHEMY_DATABASE_URL)
-engine = create_engine(os.getenv('DATABASE_URL', SQLALCHEMY_DATABASE_URL), pool_pre_ping=True)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
