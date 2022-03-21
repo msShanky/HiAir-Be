@@ -1,5 +1,6 @@
 uvicorn
 gunicorn
+psycopg2
 fastapi==0.75.0
 pandas==1.4.1
 pydantic==1.9.0
