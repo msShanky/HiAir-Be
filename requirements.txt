@@ -1,9 +1,6 @@
-fastapi
-requests
+fastapi==0.75.0
+pandas==1.4.1
+pydantic==1.9.0
+SQLAlchemy==1.4.32
+tg.devtools==2.4.3
 uvicorn
-gunicorn
-sqlalchemy
-pydantic
-devtools
-http
-uuid
